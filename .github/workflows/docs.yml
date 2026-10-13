@@ -1,0 +1,94 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      # Триггерим сборку при изменении любого проекта, решения или документации
+      - 'Domain/**'
+      - 'docs/**'
+      - '.cspell.json'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Doxygen and Graphviz
+        run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install cspell and language dictionaries
+        run: |
+          npm install -g cspell \
+            @cspell/dict-ru_ru \
+            @cspell/dict-en_us
+          cspell link add @cspell/dict-ru_ru
+          cspell link add @cspell/dict-en_us
+
+      - name: Run spellcheck
+        run: |
+          cspell lint \
+            --config .cspell.json \
+            --no-progress \
+            --show-context \
+            --show-suggestions
+
+      - name: Generate Doxygen Documentation
+        run: doxygen docs/Doxyfile
+
+      - name: Convert .mmd files to SVG
+        run: |
+          mkdir -p docs/html/diagrams
+
+          # 1. Создаем конфиг для обхода sandbox в CI
+          echo '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > puppeteer-config.json
+
+          # 2. Ищем файлы
+          shopt -s nullglob
+          mmd_files=(docs/mmd/*.mmd)
+
+          if [ ${#mmd_files[@]} -gt 0 ]; then
+            echo "Найдено ${#mmd_files[@]} .mmd файлов. Начинаем конвертацию..."
+            for file in "${mmd_files[@]}"; do
+              filename=$(basename "$file" .mmd)
+              echo "Обработка: $filename.mmd"
+
+              # 3. ВАЖНО: добавлен флаг -p puppeteer-config.json
+              npx --yes @mermaid-js/mermaid-cli \
+                -i "$file" \
+                -o "docs/html/diagrams/$filename.svg" \
+                -b transparent \
+                -p puppeteer-config.json
+
+            done
+          else
+            echo "Нет .mmd файлов для конвертации."
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs/html'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
