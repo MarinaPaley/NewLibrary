@@ -1,0 +1,6 @@
+is_global = true
+global_level = -100
+
+dotnet_diagnostic.S1135.severity = warning
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1707.severity = none
