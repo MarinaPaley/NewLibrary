@@ -1,8 +1,27 @@
 <Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <EnableGenerateDocumentationFile>false</EnableGenerateDocumentationFile>
+
+    <!-- Подключение набора правил для анализатора:
+          see: https://andrey.moveax.ru/post/net-standard-using-style-cop
+          see: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/DotNetCli.md#rulesets-and-stylecopjson
+          -->
+    <CodeAnalysisRuleSet>$(SolutionDir)_stylecop\tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Удаляем develop.ruleset, унаследованный от внешнего Directory.Build.props -->
+    <AdditionalFiles Remove="$(SolutionDir)_stylecop\develop.ruleset" />
+
+    <!-- stylecop.json уже добавлен во внешнем props — повторно не добавляем -->
+
+    <!-- Добавляем только tests.ruleset -->
+    <AdditionalFiles Include="$(SolutionDir)_stylecop\tests.ruleset" Link="_stylecop\tests.ruleset" />
+  </ItemGroup>
 </Project>

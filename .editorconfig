@@ -20,4 +20,15 @@ dotnet_naming_rule.private_fields.style = camelCase_underscore
 dotnet_naming_symbols.private_fields.applicable_kinds = field
 dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 dotnet_naming_style.camelCase_underscore.capitalization = camel_case
-dotnet_naming_style.camelCase_underscore.required_prefix = _
+# dotnet_naming_style.camelCase_underscore.required_prefix = _
+
+# Требовать XML-документацию для публичных API
+# dotnet_diagnostic.MA0005.severity = warning  # Use System.Array.Empty<T>()
+# dotnet_diagnostic.MA0015.severity = warning  # Prefer 'return ref' over 'return'
+# dotnet_diagnostic.MA0043.severity = warning  # Use StringComparer.Ordinal
+
+# IDE0005: Using directive is unnecessary (включая проверку документации)
+# dotnet_diagnostic.IDE0005.severity = warning  # Missing XML comment
+
+# CS1591: Missing XML comment for publicly visible type or member
+# dotnet_diagnostic.CS1591.severity = warning
