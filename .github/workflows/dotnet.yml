@@ -24,7 +24,7 @@ jobs:
 
     - name: Check formatting
       working-directory: .
-      run: dotnet csharpier . --check
+      run: dotnet csharpier check .
 
     - name: Check code style
       working-directory: sources
