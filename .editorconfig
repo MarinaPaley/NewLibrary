@@ -1,34 +1,91 @@
 root = true
 
-[*.cs]
+# ============================================
+# Базовые настройки для всех файлов
+# ============================================
+[*]
 indent_style = space
 indent_size = 4
 end_of_line = lf
-charset = utf-8
+charset = utf-8-nobom
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-csharp_style_var_for_built_in_types = true:error
-csharp_style_var_when_type_is_apparent = true:error
-csharp_using_directive_placement = outside_namespace:error
-csharp_style_prefer_switch_expression = true:error
-csharp_style_prefer_pattern_matching = true:error
+# ============================================
+# Настройки для C# файлов
+# ============================================
+[*.cs]
+# --- Отступы и пробелы ---
+indent_size = 4
 
+# --- Использование this. (всегда писать) ---
+dotnet_style_qualification_for_field = true:error
+dotnet_style_qualification_for_property = true:error
+dotnet_style_qualification_for_method = true:error
+dotnet_style_qualification_for_event = true:error
+
+# --- Использование var ---
+# var для встроенных типов (int, string, etc.)
+csharp_style_var_for_built_in_types = true:suggestion
+# var когда тип очевиден из правой части (new List<string>())
+csharp_style_var_when_type_is_apparent = true:suggestion
+# var в остальных случаях — НЕ использовать
+csharp_style_var_elsewhere = false:suggestion
+
+# --- Расположение using (внутри namespace) ---
+csharp_using_directive_placement = inside_namespace:error
+dotnet_diagnostic.IDE0065.severity = error
+
+# --- Фигурные скобки (Allman style — на новой строке) ---
+csharp_prefer_braces = true:error
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+# --- Современные конструкции C# ---
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_pattern_matching = true:suggestion
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+csharp_style_prefer_extended_property_pattern = true:suggestion
+
+# --- Модификаторы ---
+csharp_prefer_static_local_function = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+
+# --- Именование приватных полей (camelCase, без подчеркивания) ---
 dotnet_naming_rule.private_fields.severity = error
 dotnet_naming_rule.private_fields.symbols = private_fields
-dotnet_naming_rule.private_fields.style = camelCase_underscore
+dotnet_naming_rule.private_fields.style = camelCase_no_prefix
+
 dotnet_naming_symbols.private_fields.applicable_kinds = field
 dotnet_naming_symbols.private_fields.applicable_accessibilities = private
-dotnet_naming_style.camelCase_underscore.capitalization = camel_case
-# dotnet_naming_style.camelCase_underscore.required_prefix = _
 
-# Требовать XML-документацию для публичных API
-# dotnet_diagnostic.MA0005.severity = warning  # Use System.Array.Empty<T>()
-# dotnet_diagnostic.MA0015.severity = warning  # Prefer 'return ref' over 'return'
-# dotnet_diagnostic.MA0043.severity = warning  # Use StringComparer.Ordinal
+dotnet_naming_style.camelCase_no_prefix.capitalization = camel_case
 
-# IDE0005: Using directive is unnecessary (включая проверку документации)
-# dotnet_diagnostic.IDE0005.severity = warning  # Missing XML comment
+# --- Прочие стилистические предпочтения ---
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
 
-# CS1591: Missing XML comment for publicly visible type or member
-# dotnet_diagnostic.CS1591.severity = warning
+# --- Отключенные правила (не нужны) ---
+# IDE0005: Using directive is unnecessary
+dotnet_diagnostic.IDE0005.severity = none
+# CA1707: Identifiers should not contain underscores (для тестов)
+dotnet_diagnostic.CA1707.severity = none
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+# IDE1006: Naming rule violation
+dotnet_diagnostic.IDE1006.severity = none
+# IDE0305: Collection initialization can be simplified
+dotnet_diagnostic.IDE0305.severity = none
