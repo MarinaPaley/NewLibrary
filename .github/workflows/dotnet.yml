@@ -1,37 +1,44 @@
 name: Build .NET
+
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+
+env:
+  SOLUTION: Library.slnx
+
+defaults:
+  run:
+    working-directory: sources
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '10.0.x'
+          global-json-file: global.json
 
       - name: Restore tools
         working-directory: .
         run: dotnet tool restore
 
-      - name: Check formatting (CSharpier)
-        working-directory: .
-        run: dotnet csharpier check .
+      - name: Check code style
+        run: dotnet format "$SOLUTION" --verify-no-changes
 
       - name: Restore dependencies
-        working-directory: sources
-        run: dotnet restore Library.slnx
+        run: dotnet restore "$SOLUTION"
 
       - name: Build
-        working-directory: sources
-        run: dotnet build Library.slnx --no-restore --configuration Release --verbosity normal
+        run: dotnet build "$SOLUTION" --no-restore --configuration Release --verbosity normal
 
       - name: Test
-        working-directory: sources
-        run: dotnet test Library.slnx --no-build --configuration Release --verbosity normal
+        run: dotnet test "$SOLUTION" --no-build --configuration Release --verbosity normal
