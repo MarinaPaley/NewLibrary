@@ -2,12 +2,12 @@
   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
   "tasks": [
     {
-      "name": "csharpier-format",
+      "name": "format-code",
       "command": "dotnet",
-      "args": ["csharpier", "."],
+      "args": [ "format", "sources/Library.slnx" ],
       "windows": {
         "command": "dotnet",
-        "args": ["csharpier", "."]
+        "args": [ "format", "sources/Library.slnx" ]
       }
     }
   ]
