@@ -1,47 +1,27 @@
 {
   "version": "0.2",
-  "language": "en,ru",
-  "enableGlobDot": false,
-  "useGitignore": true,
+  "language": "ru,en",
   "words": [],
   "files": [
-    "sources/Domain/**/*.cs",
-    "docs/**/*.md",
-    "docs/**/*.mmd"
+    "sources/Domain/**/*.cs"
   ],
   "ignorePaths": [
-    "bin/",
-    "obj/",
-    ".git/",
-    ".github/",
-    "docs/html/",
-    "docs/Doxyfile",
+    "bin",
+    "obj",
+    ".git",
+    ".github",
+    "docs/html",
+    "dics",
+    "node_modules",
     "*.csproj",
-    "*.sln",
-    "*.yml",
-    "*.yaml",
-    "dics/",
-    "package-lock.json",
-    "node_modules/**"
+    "*.sln"
   ],
   "dictionaries": [
     "ru-ru",
     "en-us",
-    "project-ru",
-    "project-en",
     "project-tech"
   ],
   "dictionaryDefinitions": [
-    {
-      "name": "project-ru",
-      "path": "./dics/ru.txt",
-      "addWords": true
-    },
-    {
-      "name": "project-en",
-      "path": "./dics/en.txt",
-      "addWords": true
-    },
     {
       "name": "project-tech",
       "path": "./dics/tech.txt",
@@ -51,13 +31,7 @@
   "overrides": [
     {
       "filename": "**/*.cs",
-      "languageId": "csharp",
-      "language": "en,ru"
-    },
-    {
-      "filename": "**/*.md",
-      "languageId": "markdown",
-      "language": "en,ru"
+      "language": "ru,en"
     }
   ]
 }
