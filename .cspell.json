@@ -3,19 +3,9 @@
   "language": "en,ru",
   "enableGlobDot": false,
   "useGitignore": true,
-  "words": [
-    "Филипченко",
-    "Марина",
-    "Алексеевна",
-    "Книга",
-    "Жанр",
-    "Инициализирует",
-    "экземпляр",
-    "равным",
-    "Идентификатор"
-  ],
+  "words": [],
   "files": [
-    "sources/**/*.cs",
+    "sources/Domain/**/*.cs",
     "docs/**/*.md",
     "docs/**/*.mmd"
   ],
