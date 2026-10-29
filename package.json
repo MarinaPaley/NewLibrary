@@ -5,6 +5,8 @@
   "description": "Зависимости для workflow документации",
   "devDependencies": {
     "cspell": "^8.0.0",
-    "@mermaid-js/mermaid-cli": "^10.9.0"
+    "@mermaid-js/mermaid-cli": "^10.9.0",
+    "@cspell/dict-ru_ru": "^2.0.0",
+    "@cspell/dict-en_us": "^4.0.0"
   }
 }
