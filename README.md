@@ -41,23 +41,53 @@
     # 1. Восстановление NuGet-пакетов
 	```bash
     dotnet restore
-	```
+
 
     # 2. Восстановление локальных инструментов .NET (Husky)
 	```bash
     dotnet tool restore
-	```
 
     # 3. Установка зависимостей Node.js
 	```bash
     npm install
-	```
 
     # 4. Активация pre-commit хуков
 	```bash
     dotnet husky install
-	```
+### Инструменты для документации и проверки орфографии
 
+Для локальной генерации документации и проверки орфографии необходимо установить дополнительные инструменты:
+
+**Doxygen** — генератор HTML-документации из исходного кода:
+- Windows: скачайте установщик с [официального сайта](https://www.doxygen.nl/download.html)
+- macOS: `brew install doxygen`
+- Linux: `sudo apt-get install doxygen` (Ubuntu/Debian) или `sudo dnf install doxygen` (Fedora)
+
+**Graphviz** — рендерит графы и диаграммы для Doxygen:
+- Windows: скачайте установщик с [официального сайта](https://graphviz.org/download/)
+- macOS: `brew install graphviz`
+- Linux: `sudo apt-get install graphviz`
+
+**CSpell и словари** — проверка орфографии в коде и документации:
+
+```bash
+# Установка CSpell глобально
+npm install -g cspell @cspell/dict-ru_ru @cspell/dict-en_us
+
+# Регистрация словарей (чтобы CSpell их подхватывал)
+cspell link add @cspell/dict-ru_ru
+cspell link add @cspell/dict-en_us
+```
+
+**Проверка орфографии в Visual Studio:**
+
+Для проверки орфографии прямо в редакторе установите расширение [Visual Studio Spell Checker](https://marketplace.visualstudio.com/items?itemName=EWoodruff.VisualStudioSpellCheckerVS2022andLater). После установки оно автоматически подхватит файл `Solution.speller` из корня репозитория и будет использовать пользовательские словари из папки `dics/` (`ru.txt`, `en.txt`, `tech.txt`).
+
+> **Примечание:** Visual Studio Spell Checker и CSpell — это два разных инструмента. Spell Checker работает в IDE в реальном времени, а CSpell используется в CI/CD пайплайне для автоматической проверки. Оба инструмента используют одни и те же словари из папки `dics/`, что обеспечивает согласованность проверок.
+
+**Проверка орфографии в VS Code:**
+
+Если вы используете VS Code, установите расширение [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker). Оно автоматически подхватит конфигурацию из `.cspell.json` и словари из папки `dics/`.
 ---
 
 ## Как начать работу (Форк / Шаблон)
@@ -72,46 +102,7 @@
 
 ### Визуальная схема
 
-```mermaid
-graph TD
-    Root["Корень репозитория"]
-    
-    Root --> GitHub[".github/workflows/"]
-    GitHub --> DotnetYml["dotnet.yml<br/>CI: сборка, тесты"]
-    GitHub --> DocsYml["docs.yml<br/>CI: документация"]
-    
-    Root --> Dics["dics/"]
-    Dics --> RuTxt["ru.txt"]
-    Dics --> EnTxt["en.txt"]
-    Dics --> TechTxt["tech.txt"]
-    
-    Root --> Docs["docs/"]
-    Docs --> Doxyfile["Doxyfile"]
-    Docs --> Mmd["mmd/<br/>Mermaid-диаграммы"]
-    
-    Root --> Sources["sources/"]
-    Sources --> Slnx["Library.slnx<br/>переименовать"]
-    Sources --> Stylecop["_stylecop/"]
-    Sources --> API["API/<br/>Веб-интерфейс"]
-    Sources --> Domain["Domain/<br/>Доменная модель"]
-    Sources --> Tests["tests/<br/>Тесты"]
-    
-    Root --> Config["Конфигурация"]
-    Config --> EditorConfig[".editorconfig"]
-    Config --> GlobalConfig[".globalconfig"]
-    Config --> CSpell[".cspell.json"]
-    Config --> DirectoryBuild["Directory.Build.props"]
-    Config --> DirectoryPackages["Directory.Packages.props"]
-    Config --> GlobalJson["global.json"]
-    Config --> PackageJson["package.json"]
-    Config --> TaskRunner["task-runner.json"]
-    Config --> License["LICENSE"]
-    Config --> Readme["README.md"]
-    
-    style Root fill:#e1f5ff,stroke:#0288d1,stroke-width:3px
-    style Slnx fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style Config fill:#f3e5f5,stroke:#7b1fa2
-```
+![Структура репозитория](docs/images/project-structure.png)
 
 ### Текстовая структура
 
@@ -168,11 +159,14 @@ graph TD
 | `sources/_stylecop/` | Настройки StyleCop (`develop.ruleset`, `tests.ruleset`, `stylecop.json`). |
 | `sources/API/` | Пример проекта веб-интерфейса (заменить на свой). |
 | `sources/Domain/` | Пример проекта доменной модели (заменить на свой). |
-| `sources/tests/` | Папка с тестами. Содержит собственные `Directory.Build.props` и `.editorconfig` для ослабления требований к тестам. |
+| `sources/tests/` | Папка с тестами. Содержит собственные конфигурационные файлы для ослабления требований. |
+| `sources/tests/Directory.Build.props` | Переопределяет настройки для тестов: `IsTestProject = true`, `TreatWarningsAsErrors = false`, `GenerateDocumentationFile = false`, использует `tests.ruleset` вместо `develop.ruleset`. |
+| `sources/tests/.editorconfig` | Отключает правило CA1707 для тестов (разрешает подчёркивания в именах методов, например `Should_Return_True`). Все остальные правила наследуются из корневого `.editorconfig`. |
 | `sources/tests/Domain.Tests/` | Пример проекта с тестами (заменить на свой). |
 | `dics/` | Пользовательские словари для CSpell (`ru.txt`, `en.txt`, `tech.txt`). |
 | `docs/` | Документация: `Doxyfile` и папка `mmd/` для исходников Mermaid-диаграмм (`.mmd`). |
-| `.cspell.json` | Конфигурация проверки орфографии. |
+| `.cspell.json` | Конфигурация проверки орфографии (CSpell). |
+| `Solution.speller` | Конфигурация для расширения Visual Studio Spell Checker. Указывает IDE папку `.\dics` со словарями, чтобы орфография проверялась прямо в редакторе при написании кода и комментариев. |
 | `.editorconfig` | Единый стиль кода (отступы, `var`, расположение `using`, стиль скобок Allman). |
 | `.globalconfig` | Глобальные переопределения серьезности конкретных диагностик Roslyn. |
 | `.gitattributes` | Принудительное использование окончаний строк `LF` для всех текстовых файлов. |
@@ -277,9 +271,7 @@ URL сайта будет виден в логах шага Deploy to GitHub Pag
     - `TreatWarningsAsErrors = false`
     - `GenerateDocumentationFile = false` (XML-документация в тестах не нужна)
     - Использует `tests.ruleset` вместо `develop.ruleset`
-- `tests/.editorconfig` — переопределяет правила только для тестов:
-    - `csharp_style_var_elsewhere = true:suggestion` (можно использовать `var` везде)
-    - `dotnet_diagnostic.CA1707.severity = none` (можно использовать подчеркивания в именах методов тестов, например `Should_Return_True_When_Input_Is_Valid`)
+- `tests/.editorconfig` — переопределяет правила только для тестов: отключает правило CA1707, разрешая подчёркивания в именах методов (например, `Should_Return_True`). Все остальные правила стиля наследуются из корневого `.editorconfig`.
 
 Благодаря этому тесты остаются читаемыми и не загромождаются лишней документацией, а основной код сохраняет строгий стиль.
 
