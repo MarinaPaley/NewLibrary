@@ -68,7 +68,96 @@
 4. Выполните первоначальную настройку окружения (см. раздел «Что установить локально»).
 
 ---
+## Структура репозитория
 
+### Визуальная схема
+
+```mermaid
+graph TD
+    Root["Корень репозитория"]
+    
+    Root --> GitHub[".github/workflows/"]
+    GitHub --> DotnetYml["dotnet.yml<br/>CI: сборка, тесты"]
+    GitHub --> DocsYml["docs.yml<br/>CI: документация"]
+    
+    Root --> Dics["dics/"]
+    Dics --> RuTxt["ru.txt"]
+    Dics --> EnTxt["en.txt"]
+    Dics --> TechTxt["tech.txt"]
+    
+    Root --> Docs["docs/"]
+    Docs --> Doxyfile["Doxyfile"]
+    Docs --> Mmd["mmd/<br/>Mermaid-диаграммы"]
+    
+    Root --> Sources["sources/"]
+    Sources --> Slnx["Library.slnx<br/>переименовать"]
+    Sources --> Stylecop["_stylecop/"]
+    Sources --> API["API/<br/>Веб-интерфейс"]
+    Sources --> Domain["Domain/<br/>Доменная модель"]
+    Sources --> Tests["tests/<br/>Тесты"]
+    
+    Root --> Config["Конфигурация"]
+    Config --> EditorConfig[".editorconfig"]
+    Config --> GlobalConfig[".globalconfig"]
+    Config --> CSpell[".cspell.json"]
+    Config --> DirectoryBuild["Directory.Build.props"]
+    Config --> DirectoryPackages["Directory.Packages.props"]
+    Config --> GlobalJson["global.json"]
+    Config --> PackageJson["package.json"]
+    Config --> TaskRunner["task-runner.json"]
+    Config --> License["LICENSE"]
+    Config --> Readme["README.md"]
+    
+    style Root fill:#e1f5ff,stroke:#0288d1,stroke-width:3px
+    style Slnx fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style Config fill:#f3e5f5,stroke:#7b1fa2
+```
+
+### Текстовая структура
+
+```text
+.
+├── .github/workflows/
+│   ├── dotnet.yml                  # CI: сборка, тесты, проверка формата
+│   └── docs.yml                    # CI: CSpell, Doxygen, Mermaid, деплой
+├── dics/                           # Словари для CSpell
+│   ├── ru.txt
+│   ├── en.txt
+│   └── tech.txt
+├── docs/                           # Документация
+│   ├── Doxyfile                    # Конфигурация Doxygen
+│   └── mmd/                        # Исходники Mermaid-диаграмм
+├── sources/                        # Весь исходный код
+│   ├── Library.slnx                # Файл решения (переименовать)
+│   ├── _stylecop/                  # Настройки StyleCop
+│   │   ├── develop.ruleset
+│   │   ├── tests.ruleset
+│   │   └── stylecop.json
+│   ├── API/                        # Веб-интерфейс
+│   │   ├── API.csproj
+│   │   ├── Program.cs
+│   │   └── appsettings*.json
+│   ├── Domain/                     # Доменная модель
+│   │   └── Domain.csproj
+│   └── tests/                      # Тесты (ослабленные правила)
+│       ├── Directory.Build.props   # Наследует корневой + IsTestProject
+│       ├── .editorconfig           # Разрешает var и _ в именах
+│       └── Domain.Tests/
+├── .editorconfig                   # Единый стиль кода
+├── .globalconfig                   # Глобальные настройки анализаторов
+├── .cspell.json                    # Конфигурация проверки орфографии
+├── .gitattributes                  # Принудительные окончания LF
+├── .gitignore                      # Исключения для .NET, ОС, Node
+├── Directory.Build.props           # Глобальные настройки всех .csproj
+├── Directory.Packages.props        # Central Package Management
+├── global.json                     # Фиксация .NET SDK 10.0.400
+├── package.json                    # Зависимости Node.js (CSpell, Mermaid)
+├── dotnet-tools.json               # Локальные инструменты .NET (Husky)
+├── task-runner.json                # Задачи для Husky
+├── LICENSE                         # MIT (код) + CC BY 4.0 (тексты)
+└── README.md                       # Этот файл
+```
+---
 ## Что в нём за что отвечает
 
 | Файл / Папка | Назначение |
