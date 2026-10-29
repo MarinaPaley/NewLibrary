@@ -2,7 +2,8 @@ name: Build and Deploy Documentation
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
     paths:
     # Триггерим сборку при изменении любого проекта, решения или документации
       - 'sources/Domain/**'
@@ -10,16 +11,34 @@ on:
       - 'docs/**'
       - 'dics/**'
       - '.cspell.json'
-      - 'docs/Doxyfile'
       - '.github/workflows/docs.yml'
+      - 'package.json'  # триггерим при изменении зависимостей
+
+  release:
+    types: [published]
+
   workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Принудительно пересобрать даже если файлы не менялись'
+        required: false
+        default: 'false'
+        type: boolean
+# Это необходимо подключить при работе в кбольшой команде при одновременном merge нескольких PR
+#concurrency:
+#  group: "pages"
+#  cancel-in-progress: true
 
 jobs:
   build-and-deploy-docs:
     runs-on: ubuntu-latest
     
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
 
@@ -36,17 +55,13 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install cspell and language dictionaries
-        run: |
-          npm install -g cspell \
-            @cspell/dict-ru_ru \
-            @cspell/dict-en_us
-          cspell link add @cspell/dict-ru_ru
-          cspell link add @cspell/dict-en_us
+      # Установить зависимости из package.json
+      - name: Install Node dependencies
+        run: npm install
 
       - name: Run spellcheck
         run: |
-          cspell lint \
+          npx cspell lint \
             --config .cspell.json \
             --no-progress \
             --show-context \
@@ -58,27 +73,24 @@ jobs:
       - name: Convert .mmd files to SVG
         run: |
           mkdir -p docs/html/diagrams
-          
-          # 1. Создаем конфиг для обхода sandbox в CI
+        # 1. Создаем конфиг для обхода sandbox в CI
           echo '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > puppeteer-config.json
-          
-          # 2. Ищем файлы
+        # 2. Ищем файлы
           shopt -s nullglob
           mmd_files=(docs/mmd/*.mmd)
-          
+
           if [ ${#mmd_files[@]} -gt 0 ]; then
             echo "Найдено ${#mmd_files[@]} .mmd файлов. Начинаем конвертацию..."
             for file in "${mmd_files[@]}"; do
               filename=$(basename "$file" .mmd)
               echo "Обработка: $filename.mmd"
-          
-          # 3. ВАЖНО: добавлен флаг -p puppeteer-config.json
-              npx --yes @mermaid-js/mermaid-cli \
+        # 3. ВАЖНО: добавлен флаг -p puppeteer-config.json
+              npx @mermaid-js/mermaid-cli \
                 -i "$file" \
                 -o "docs/html/diagrams/$filename.svg" \
                 -b transparent \
                 -p puppeteer-config.json
-                
+
             done
           else
             echo "Нет .mmd файлов для конвертации."

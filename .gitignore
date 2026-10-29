@@ -423,4 +423,7 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
+package-lock.json
+node_modules/
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudio

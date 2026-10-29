@@ -1,0 +1,10 @@
+{
+  "name": "docs-workflow",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Зависимости для workflow документации",
+  "devDependencies": {
+    "cspell": "^8.0.0",
+    "@mermaid-js/mermaid-cli": "^10.9.0"
+  }
+}
