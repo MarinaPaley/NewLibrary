@@ -55,13 +55,20 @@ jobs:
         with:
           node-version: '22'
 
-      # Установить зависимости из package.json
+      - name: Install cspell and language dictionaries
+        run: |
+          npm install -g cspell \
+            @cspell/dict-ru_ru \
+            @cspell/dict-en_us
+          cspell link add @cspell/dict-ru_ru
+          cspell link add @cspell/dict-en_us
+
       - name: Install Node dependencies
         run: npm install
 
       - name: Run spellcheck
         run: |
-          npx cspell lint \
+          cspell lint \
             --config .cspell.json \
             --no-progress \
             --show-context \
@@ -85,7 +92,7 @@ jobs:
               filename=$(basename "$file" .mmd)
               echo "Обработка: $filename.mmd"
               # 3. ВАЖНО: добавлен флаг -p puppeteer-config.json
-              npx @mermaid-js/mermaid-cli \
+              npx --yes @mermaid-js/mermaid-cli \
                 -i "$file" \
                 -o "docs/html/diagrams/$filename.svg" \
                 -b transparent \
