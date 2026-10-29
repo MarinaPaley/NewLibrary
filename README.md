@@ -38,22 +38,25 @@
 
 После клонирования репозитория выполните в корне:
 
-    # 1. Восстановление NuGet-пакетов
-	```bash
-    dotnet restore
+#### 1. Восстановление NuGet-пакетов
+```sh
+dotnet restore
+```
 
+#### 2. Восстановление локальных инструментов .NET (Husky)
+```sh
+dotnet tool restore
+```
 
-    # 2. Восстановление локальных инструментов .NET (Husky)
-	```bash
-    dotnet tool restore
+#### 3. Установка зависимостей Node.js
+```sh
+npm install
+```
 
-    # 3. Установка зависимостей Node.js
-	```bash
-    npm install
-
-    # 4. Активация pre-commit хуков
-	```bash
-    dotnet husky install
+#### 4. Активация pre-commit хуков
+```sh
+dotnet husky install
+```
 ### Инструменты для документации и проверки орфографии
 
 Для локальной генерации документации и проверки орфографии необходимо установить дополнительные инструменты:
@@ -69,12 +72,12 @@
 - Linux: `sudo apt-get install graphviz`
 
 **CSpell и словари** — проверка орфографии в коде и документации:
-
-```bash
-# Установка CSpell глобально
+##### Установка CSpell глобально
+```sh
 npm install -g cspell @cspell/dict-ru_ru @cspell/dict-en_us
-
-# Регистрация словарей (чтобы CSpell их подхватывал)
+```
+##### Регистрация словарей (чтобы CSpell их подхватывал)
+```sh
 cspell link add @cspell/dict-ru_ru
 cspell link add @cspell/dict-en_us
 ```
@@ -88,6 +91,7 @@ cspell link add @cspell/dict-en_us
 **Проверка орфографии в VS Code:**
 
 Если вы используете VS Code, установите расширение [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker). Оно автоматически подхватит конфигурацию из `.cspell.json` и словари из папки `dics/`.
+
 ---
 
 ## Как начать работу (Форк / Шаблон)
@@ -99,12 +103,6 @@ cspell link add @cspell/dict-en_us
 
 ---
 ## Структура репозитория
-
-### Визуальная схема
-
-![Структура репозитория](docs/images/project-structure.png)
-
-### Текстовая структура
 
 ```text
 .
@@ -132,7 +130,7 @@ cspell link add @cspell/dict-en_us
 │   │   └── Domain.csproj
 │   └── tests/                      # Тесты (ослабленные правила)
 │       ├── Directory.Build.props   # Наследует корневой + IsTestProject
-│       ├── .editorconfig           # Разрешает var и _ в именах
+│       ├── .editorconfig           # Разрешает _ в именах
 │       └── Domain.Tests/
 ├── .editorconfig                   # Единый стиль кода
 ├── .globalconfig                   # Глобальные настройки анализаторов
@@ -285,11 +283,11 @@ URL сайта будет виден в логах шага Deploy to GitHub Pag
 
 Workflow срабатывает только в трёх случаях:
 
-1. Push или мерж в `master`, если изменились файлы из списка: `sources/Domain/`, `sources/API/`, `docs/`, `dics/`, `.cspell.json`, `.github/workflows/docs.yml`, `package.json`.
+1. Push или merge в `master`, если изменились файлы из списка: `sources/Domain/`, `sources/API/`, `docs/`, `dics/`, `.cspell.json`, `.github/workflows/docs.yml`, `package.json`.
 2. Публикация GitHub Release.
 3. Вручную через кнопку Run workflow во вкладке Actions.
 
-Важно: отдельных триггеров на `pull_request` нет. При открытии или обновлении PR документация не публикуется. Сборка происходит только после мержа в `master`.
+Важно: отдельных триггеров на `pull_request` нет. При открытии или обновлении PR документация не публикуется. Сборка происходит только после mergeа в `master`.
 
 ### Проверка орфографии (CSpell)
 
@@ -310,7 +308,7 @@ Workflow срабатывает только в трёх случаях:
 ### Обновление Node.js зависимостей (CSpell, Mermaid)
 
 Версии инструментов зафиксированы в корневом `package.json` с использованием символа `^` (caret):
-
+```json
     {
       "devDependencies": {
         "cspell": "^8.0.0",
@@ -319,7 +317,7 @@ Workflow срабатывает только в трёх случаях:
         "@cspell/dict-en_us": "^4.0.0"
       }
     }
-
+```
 Правило `^`:
 
 - Патчи (8.0.1) и минорные (8.1.0) версии подхватываются автоматически при `npm install`.
@@ -331,7 +329,7 @@ Workflow срабатывает только в трёх случаях:
 
 1. В `package.json` поменяйте версию, например: `"cspell": "^9.0.0"`.
 2. Закоммитьте изменение и оформите PR в `master`.
-3. После мержа workflow соберёт документацию с новой версией (изменение `package.json` есть в триггерах).
+3. После mergeа workflow соберёт документацию с новой версией (изменение `package.json` есть в триггерах).
 
 Примечание: LTS-версий у npm-пакетов нет. LTS есть у .NET (управляется через `global.json`) и у Node.js (`node-version: '22'` в workflow) — это разные уровни абстракции.
 
