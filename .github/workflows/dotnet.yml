@@ -5,39 +5,40 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+
+env:
+  SOLUTION: Library.slnx
+
+defaults:
+  run:
+    working-directory: sources
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '10.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
 
-    - name: Restore tools
-      working-directory: .
-      run: dotnet tool restore
+      - name: Restore tools
+        working-directory: .
+        run: dotnet tool restore
 
-    - name: Check formatting
-      working-directory: .
-      run: dotnet csharpier . --check
+      - name: Check code style
+        run: dotnet format "$SOLUTION" --verify-no-changes
 
-    - name: Check code style
-      working-directory: sources
-      run: dotnet format --verify-no-changes
+      - name: Restore dependencies
+        run: dotnet restore "$SOLUTION"
 
-    - name: Restore dependencies
-      working-directory: sources
-      run: dotnet restore
+      - name: Build
+        run: dotnet build "$SOLUTION" --no-restore --configuration Release --verbosity normal
 
-    - name: Build
-      working-directory: sources
-      run: dotnet build --no-build --verbosity normal
-
-    - name: Test
-      working-directory: sources
-      run: dotnet test Library.sln --no-build --verbosity normal
+      - name: Test
+        run: dotnet test "$SOLUTION" --no-build --configuration Release --verbosity normal

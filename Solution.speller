@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SpellCheckerConfiguration>
+  <ConfiguredRaisableIssues>
+    <!-- Какие типы ошибок показывать -->
+  </ConfiguredRaisableIssues>
+  <DictionaryFolders>
+    <DictionaryFolder>.\dics</DictionaryFolder>
+  </DictionaryFolders>
+  <IgnoredWords>
+    <!-- Слова, которые игнорируются глобально -->
+  </IgnoredWords>
+</SpellCheckerConfiguration>
