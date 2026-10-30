@@ -33,11 +33,11 @@ on:
 jobs:
   build-and-deploy-docs:
     runs-on: ubuntu-latest
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     permissions:
       contents: read
       pages: write
@@ -55,20 +55,12 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install cspell and language dictionaries
-        run: |
-          npm install -g cspell \
-            @cspell/dict-ru_ru \
-            @cspell/dict-en_us
-          cspell link add @cspell/dict-ru_ru
-          cspell link add @cspell/dict-en_us
-
       - name: Install Node dependencies
         run: npm install
 
       - name: Run spellcheck
         run: |
-          cspell lint \
+          npx cspell lint \
             --config .cspell.json \
             --no-progress \
             --show-context \

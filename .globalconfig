@@ -1,3 +1,5 @@
+#.globalconfig — настройки анализаторов от deep seek
+
 is_global = true
 global_level = -100
 
@@ -8,7 +10,7 @@ dotnet_diagnostic.S1135.severity = warning
 # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1303.severity = none
 
-# IDE1006: Naming rule violation (имя поля начинать с _)
+# IDE1006: Naming rule violation (общее правило именования; конкретные правила задаются в .editorconfig)
 dotnet_diagnostic.IDE1006.severity = none
 
 # IDE0305: Collection initialization can be simplified
@@ -16,6 +18,3 @@ dotnet_diagnostic.IDE0305.severity = none
 
 # MA0007: Add comma after the last value
 dotnet_diagnostic.MA0007.severity = warning
-
-# IDE0065: Using directives must be placed outside of a namespace declaration
-dotnet_diagnostic.IDE0065.severity = none
