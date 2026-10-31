@@ -18,8 +18,6 @@ namespace Domain
         /// <exception cref="ArgumentNullException"> в случае <paramref name="name"/> равным <see langword="null"/>.</exception>
         public Genre(string name)
         {
-
-
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
