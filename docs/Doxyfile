@@ -25,6 +25,7 @@ EXCLUDE_PATTERNS       = */bin/* \
                          */docs/* \
                          */Migrations/* \
                          */migrations/*
+                         */node_modules/*
 
 # --- Куда сохранять результат ---
 OUTPUT_DIRECTORY       = docs
