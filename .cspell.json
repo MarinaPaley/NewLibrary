@@ -9,6 +9,7 @@
   "words": [],
   "files": [
     "sources/Domain/**/*.cs",
+	"sources/API/**/*.cs",
     "docs/**/*.md",
     "docs/**/*.mmd"
   ],
