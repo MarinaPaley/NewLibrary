@@ -1,5 +1,5 @@
 # ============================================
-# Минимальный Doxyfile для C# проекта
+# Doxyfile для C# проекта "Домашняя библиотека"
 # ============================================
 
 # --- Проект ---
@@ -8,38 +8,51 @@ OUTPUT_LANGUAGE        = Russian
 DOXYFILE_ENCODING      = UTF-8
 
 # --- Откуда брать код ---
-# Точка означает "корень репозитория, откуда запущен doxygen"
 INPUT                  = .
 RECURSIVE              = YES
+EXTENSION_MAPPING      = cs=C#
 
 # --- Какие файлы искать ---
 FILE_PATTERNS          = *.cs \
                          *.md
 
 # --- Что игнорировать (ОЧЕНЬ ВАЖНО!) ---
-# Будут проигнорированы все папки с именем Migrations!
 EXCLUDE_PATTERNS       = */bin/* \
                          */obj/* \
                          */.git/* \
                          */.github/* \
                          */docs/* \
                          */Migrations/* \
-                         */migrations/*
                          */node_modules/*
+
+# Явное исключение каталога вывода — чтобы Doxygen
+# не индексировал собственный HTML при повторных сборках
+EXCLUDE                = docs
 
 # --- Куда сохранять результат ---
 OUTPUT_DIRECTORY       = docs
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
+HTML_DYNAMIC_SECTIONS  = YES
+GENERATE_TREEVIEW      = YES
+SOURCE_BROWSER         = YES
 
 # --- Графы и диаграммы ---
 HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
+DOT_GRAPH_MAX_NODES    = 100
 
 # --- Поведение ---
 EXTRACT_ALL            = YES
 JAVADOC_AUTOBRIEF      = YES
 MARKDOWN_SUPPORT       = YES
 CASE_SENSE_NAMES       = NO
+
+# Контроль предупреждений (полезно, даже при EXTRACT_ALL = YES)
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
+QUIET                  = NO
 
 # --- Отключить лишние форматы (ускоряет сборку) ---
 GENERATE_LATEX         = NO
