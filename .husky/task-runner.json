@@ -2,13 +2,10 @@
   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
   "tasks": [
     {
-      "name": "format-code",
+      "name": "format-check",
+      "group": "pre-commit",
       "command": "dotnet",
-      "args": [ "format", "sources/Library.slnx" ],
-      "windows": {
-        "command": "dotnet",
-        "args": [ "format", "sources/Library.slnx" ]
-      }
+      "args": [ "format", "sources/Library.slnx", "--verify-no-changes" ]
     }
   ]
 }
