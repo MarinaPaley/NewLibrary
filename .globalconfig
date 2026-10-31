@@ -18,3 +18,9 @@ dotnet_diagnostic.IDE0305.severity = none
 
 # MA0007: Add comma after the last value
 dotnet_diagnostic.MA0007.severity = warning
+
+# SA1641: FileHeaderCompanyNameTextMustMatch
+# Отключено: правило требует companyName в заголовке каждого файла,
+# а dotnet format не поддерживает его автоматическое исправление ("Fix All in Solution").
+# Для шаблона это избыточно.
+dotnet_diagnostic.SA1641.severity = none
