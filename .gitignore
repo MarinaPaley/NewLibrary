@@ -356,3 +356,10 @@ FakesAssemblies/
 
 # Visual Studio 6 build log
 *.pl
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Doxygen output
+docs/html/

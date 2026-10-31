@@ -75,6 +75,9 @@ dotnet_style_prefer_conditional_expression_over_return = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:suggestion
 dotnet_style_namespace_match_folder = true:suggestion
 
-# --- Отключенные правила, которые логичнее держать рядом со стилем using ---
-# IDE0005: Using directive is unnecessary
-dotnet_diagnostic.IDE0005.severity = none
+# --- Правила, которые логичнее держать рядом со стилем using ---
+# IDE0005: Remove unnecessary using directives
+dotnet_diagnostic.IDE0005.severity = warning
+
+# Удалять несколько пустых строк подряд (SA1507)
+dotnet_diagnostic.SA1507.severity = error
