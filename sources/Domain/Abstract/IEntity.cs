@@ -1,0 +1,19 @@
+// <copyright file="IEntity.cs" company="Филипченко Марина Алексеевна">
+// Copyright (c) Филипченко Марина Алексеевна 2026. Library.
+// </copyright>
+
+namespace Domain.Abstract
+{
+    using System;
+
+    /// <summary>
+    /// Сущность.
+    /// </summary>
+    public interface IEntity
+    {
+        /// <summary>
+        /// Идентификатор.
+        /// </summary>
+        public abstract Guid Id { get; set; }
+    }
+}
