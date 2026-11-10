@@ -14,6 +14,6 @@ namespace Domain.Abstract
         /// <summary>
         /// Идентификатор.
         /// </summary>
-        public abstract Guid Id { get; set; }
+        Guid Id { get; set; }
     }
 }
