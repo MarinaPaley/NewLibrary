@@ -14,6 +14,6 @@ namespace Domain.Abstract
         /// <summary>
         /// Идентификатор.
         /// </summary>
-        Guid Id { get; set; }
+        Guid Id { get; }
     }
 }
