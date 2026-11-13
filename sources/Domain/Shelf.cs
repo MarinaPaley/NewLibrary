@@ -26,7 +26,7 @@ namespace Domain
         /// <summary>
         /// Книги.
         /// </summary>
-        public ISet<Book> Books { get; set; } = new HashSet<Book>();
+        public ISet<Book> Books { get; private set; } = new HashSet<Book>();
 
         /// <summary>
         /// Добавляет книгу.
@@ -39,6 +39,13 @@ namespace Domain
             {
                 return false;
             }
+
+            if (ReferenceEquals(book.Shelf, this))
+            {
+                return false;
+            }
+
+            book.Shelf?.Books.Remove(book);
 
             book.Shelf = this;
             return this.Books.Add(book);

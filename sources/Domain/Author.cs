@@ -52,17 +52,45 @@ namespace Domain
         /// <summary>
         /// Дата рождения.
         /// </summary>
-        public DateOnly? DateBirth { get; set; }
+        public DateOnly? DateBirth
+        {
+            get;
+            set
+            {
+                if (value.HasValue && this.DateDeath.HasValue && value.Value >= this.DateDeath.Value)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(value),
+                        "Дата рождения должна быть раньше даты смерти.");
+                }
+
+                field = value;
+            }
+        }
 
         /// <summary>
         /// Дата смерти.
         /// </summary>
-        public DateOnly? DateDeath { get; set; }
+        public DateOnly? DateDeath
+        {
+            get;
+            set
+            {
+                if (value.HasValue && this.DateBirth.HasValue && value.Value <= this.DateBirth.Value)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(value),
+                        "Дата смерти должна быть позже даты рождения.");
+                }
+
+                field = value;
+            }
+        }
 
         /// <summary>
         /// Книги.
         /// </summary>
-        public ISet<Book> Books { get; set; } = new HashSet<Book>();
+        public ISet<Book> Books { get; private set; } = new HashSet<Book>();
 
         /// <summary>
         /// Добавляет книгу Автору.
@@ -76,7 +104,10 @@ namespace Domain
                 return false;
             }
 
-            return this.Books.Add(book) || book.Authors.Add(this);
+            var added = this.Books.Add(book);
+            book.Authors.Add(this);
+
+            return added;
         }
 
         /// <summary>
@@ -91,16 +122,36 @@ namespace Domain
                 return false;
             }
 
-            return this.Books.Remove(book) && book.Authors.Remove(this);
+            var removed = this.Books.Remove(book);
+            book.Authors.Remove(this);
+
+            return removed;
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Author author && this.Equals(author);
+        public override string ToString()
+        {
+            var dateBirth = this.DateBirth.HasValue
+                ? $" Дата рождения: {this.DateBirth.Value.ToString("dd.MM.yyyy", this.culture)}"
+                : string.Empty;
+
+            var dateDeath = this.DateDeath.HasValue
+                ? $" Дата смерти: {this.DateDeath.Value.ToString("dd.MM.yyyy", this.culture)}"
+                : string.Empty;
+
+            return new StringBuilder()
+                .Append(this.Name)
+                .AppendIf(this.Patronymic is not null, $" {this.Patronymic}")
+                .AppendIf(this.FamilyName is not null, $" {this.FamilyName}")
+                .AppendIf(this.DateBirth is not null, dateBirth)
+                .AppendIf(this.DateDeath is not null, dateDeath)
+                .ToString();
+        }
 
         /// <inheritdoc/>
-        public override bool Equals(Author? other)
+        protected override bool EqualsFields(Author other)
         {
-            return base.Equals(other)
+            return base.EqualsFields(other)
                 && string.Equals(this.FamilyName, other.FamilyName, StringComparison.Ordinal)
                 && string.Equals(this.Patronymic, other.Patronymic, StringComparison.Ordinal)
                 && this.DateBirth == other.DateBirth
@@ -108,31 +159,14 @@ namespace Domain
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode()
+        protected override int GetHashCodeFields()
         {
-            return this.Id == Guid.Empty
-                ? HashCode.Combine(this.Name, this.FamilyName, this.Patronymic, this.DateBirth, this.DateDeath)
-                : this.Id.GetHashCode();
-        }
-
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            var dateBirth = this.DateBirth.HasValue
-                ? $" Год рождения: {this.DateBirth.Value.ToString("dd.MM.yyyy", this.culture)}"
-                : string.Empty;
-
-            var dateDeath = this.DateDeath.HasValue
-                ? $" Год смерти: {this.DateDeath.Value.ToString("dd.MM.yyyy", this.culture)}"
-                : string.Empty;
-
-            return new StringBuilder()
-                .Append(this.Name)
-                .AppendIf(this.Patronymic is not null, string.Empty)
-                .AppendIf(this.FamilyName is not null, string.Empty)
-                .AppendIf(this.DateBirth is not null, dateBirth)
-                .AppendIf(this.DateDeath is not null, dateDeath)
-                .ToString();
+            return HashCode.Combine(
+                base.GetHashCodeFields(),
+                this.FamilyName,
+                this.Patronymic,
+                this.DateBirth,
+                this.DateDeath);
         }
     }
 }

@@ -26,6 +26,6 @@ namespace Domain
         /// <summary>
         /// Книги.
         /// </summary>
-        public ISet<Book> Books { get; set; } = new HashSet<Book>();
+        public ISet<Book> Books { get; private set; } = new HashSet<Book>();
     }
 }

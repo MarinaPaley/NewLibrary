@@ -40,21 +40,9 @@ namespace Domain.Abstract
         public override string ToString() => $"[{this.Name}]";
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => base.Equals(obj) && obj is TEntity entity && this.Equals(entity);
+        protected override bool EqualsFields(TEntity other) => string.Equals(this.Name, other.Name, StringComparison.Ordinal);
 
         /// <inheritdoc/>
-        public override bool Equals(TEntity? other)
-        {
-            return base.Equals(other)
-                && string.Equals(this.Name, other.Name, StringComparison.Ordinal);
-        }
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return this.Id == Guid.Empty
-                ? (this.Name, StringComparer.Ordinal).GetHashCode()
-                : this.Id.GetHashCode();
-        }
+        protected override int GetHashCodeFields() => StringComparer.Ordinal.GetHashCode(this.Name);
     }
 }

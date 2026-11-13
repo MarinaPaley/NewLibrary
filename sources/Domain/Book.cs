@@ -6,6 +6,7 @@ namespace Domain
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Domain.Abstract;
     using Staff;
 
@@ -30,12 +31,17 @@ namespace Domain
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pages);
             ArgumentOutOfRangeException.ThrowIfGreaterThan(year, DateTime.Now.Year);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(year);
+            ArgumentNullException.ThrowIfNull(authors);
+            if (authors.Length == 0)
+            {
+                throw new ArgumentException("Коллекция не может быть пустой.", nameof(authors));
+            }
+
             this.Pages = pages;
             this.ISBN = isbn?.TrimOrNull();
             this.Year = year;
             this.Publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
             publisher.Books.Add(this);
-            this.Authors = new HashSet<Author>(authors);
 
             foreach (var author in authors)
             {
@@ -51,7 +57,7 @@ namespace Domain
         /// <summary>
         /// Авторы.
         /// </summary>
-        public ISet<Author> Authors { get; private init; }
+        public ISet<Author> Authors { get; private init; } = new HashSet<Author>();
 
         /// <summary>
         /// Количество страниц.
@@ -90,18 +96,27 @@ namespace Domain
                 return false;
             }
 
+            if (ReferenceEquals(this.Genre, genre))
+            {
+                return false;
+            }
+
+            this.Genre?.Books.Remove(this);
+
             this.Genre = genre;
-            return genre.Books.Add(this);
+            genre.Books.Add(this);
+
+            return true;
         }
 
         /// <summary>
-        /// Удаляет жанр.
+        /// Удаляет жанр у книги.
         /// </summary>
-        /// <param name="genre"> Жанр.</param>
+        /// <param name="genre"> Жанр. </param>
         /// <returns> <see langword="true"/>, если удалили, иначе - <see langword="false"/>.</returns>
         public bool RemoveGenre(Genre genre)
         {
-            if (genre is null)
+            if (genre is null || !ReferenceEquals(this.Genre, genre))
             {
                 return false;
             }
@@ -110,54 +125,42 @@ namespace Domain
             return genre.Books.Remove(this);
         }
 
-        /// <inheritdoc/>
-        public override bool Equals(Book? other)
+        /// <inheritdoc cref="object.ToString()"/>
+        public override string ToString()
         {
-            if (!base.Equals(other))
+            return $"{base.ToString()}: [{this.Authors.Join()}]";
+        }
+
+        /// <inheritdoc/>
+        protected override bool EqualsFields(Book other)
+        {
+            if (!base.EqualsFields(other))
             {
                 return false;
-            }
-
-            if (this.ISBN is not null && other.ISBN is not null)
-            {
-                return string.Equals(this.ISBN, other.ISBN, StringComparison.Ordinal);
             }
 
             if (this.ISBN is not null || other.ISBN is not null)
             {
-                return false;
+                return string.Equals(this.ISBN, other.ISBN, StringComparison.Ordinal);
             }
 
-            return string.Equals(this.Name, other.Name, StringComparison.Ordinal)
-                && this.Pages == other.Pages
+            return this.Pages == other.Pages
                 && this.Year == other.Year
                 && this.Publisher.Equals(other.Publisher)
                 && this.Authors.SetEquals(other.Authors);
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is Book book && this.Equals(book);
-
-        /// <inheritdoc/>
-        public override int GetHashCode()
+        protected override int GetHashCodeFields()
         {
-            if (this.Id != Guid.Empty)
-            {
-                return this.Id.GetHashCode();
-            }
-
-            if (this.ISBN is not null)
-            {
-                return StringComparer.Ordinal.GetHashCode(this.ISBN);
-            }
-
-            return HashCode.Combine(this.Name, this.Authors, this.Pages, this.Publisher, this.Year);
-        }
-
-        /// <inheritdoc cref="object.ToString()"/>
-        public override string ToString()
-        {
-            return $"{base.ToString()}: [{this.Authors.Join()}]";
+            return this.ISBN is not null
+                ? HashCode.Combine(base.GetHashCodeFields(), this.ISBN)
+                : HashCode.Combine(
+                    base.GetHashCodeFields(),
+                    this.Pages,
+                    this.Year,
+                    this.Publisher,
+                    this.Authors.Count);
         }
     }
 }
