@@ -1,7 +1,7 @@
 #.globalconfig — настройки анализаторов от deep seek
 
 is_global = true
-global_level = -100
+global_level = 100
 
 # S1135: TODO tags are commonly used to mark places where some more code is required,
 # but which the developer wants to implement later.
@@ -24,3 +24,12 @@ dotnet_diagnostic.MA0007.severity = warning
 # а dotnet format не поддерживает его автоматическое исправление ("Fix All in Solution").
 # Для шаблона это избыточно.
 dotnet_diagnostic.SA1641.severity = none
+
+# Отключаем правило «Loops should be simplified with "LINQ" expressions»
+dotnet_diagnostic.S3267.severity = none
+
+# Merge is expressions on the same value
+dotnet_diagnostic.MA0194.severity = none;
+
+# IDE0046 - 'if' statement can be simplified
+dotnet_diagnostic.IDE0046.severity = none
