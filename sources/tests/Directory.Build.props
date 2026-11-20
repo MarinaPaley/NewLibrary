@@ -8,6 +8,9 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <EnableGenerateDocumentationFile>false</EnableGenerateDocumentationFile>
 
+	<!-- Подавляем предупреждение компилятора CS1591 для тестовых проектов -->
+    <NoWarn>$(NoWarn);EnableGenerateDocumentationFile</NoWarn>
+	
     <!-- Подключение набора правил для анализатора:
           see: https://andrey.moveax.ru/post/net-standard-using-style-cop
           see: https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/DotNetCli.md#rulesets-and-stylecopjson

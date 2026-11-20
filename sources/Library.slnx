@@ -3,7 +3,7 @@
   <Folder Name="/Tests/">
     <Project Path="tests/Domain.Tests/Domain.Tests.csproj" />
   </Folder>
-
   <Project Path="API/API.csproj" />
   <Project Path="Domain/Domain.csproj" />
+  <Project Path="Staff/Staff.csproj" Id="8a696aa3-7010-459a-98da-077fc85525c1" />
 </Solution>
