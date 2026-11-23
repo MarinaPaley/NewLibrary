@@ -146,8 +146,8 @@ namespace Domain
 
             return this.Pages == other.Pages
                 && this.Year == other.Year
-                && this.Publisher.Equals(other.Publisher)
-                && this.Authors.SetEquals(other.Authors);
+                && this.Authors.SetEquals(other.Authors)
+                && this.Publisher.Equals(other.Publisher);
         }
 
         /// <inheritdoc/>
@@ -158,9 +158,7 @@ namespace Domain
                 : HashCode.Combine(
                     base.GetHashCodeFields(),
                     this.Pages,
-                    this.Year,
-                    this.Publisher,
-                    this.Authors.Count);
+                    this.Year);
         }
     }
 }
