@@ -24,7 +24,7 @@ namespace Domain
         /// <param name="name"> Имя.</param>
         /// <param name="familyName"> Фамилия. </param>
         /// <param name="patronymic"> Отчество.</param>
-        public Author(string? familyName, string name, string? patronymic)
+        public Author(string? familyName, string name, string? patronymic = null)
             : base(name)
         {
             this.FamilyName = familyName;
